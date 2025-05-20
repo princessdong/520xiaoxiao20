@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>520专属页面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            love: {
+              primary: '#FF4B91',
+              secondary: '#FF85A1',
+              accent: '#FFD1DA',
+              dark: '#C92C6D'
+            }
+          },
+          fontFamily: {
+            romantic: ['Dancing Script', 'cursive', 'sans-serif'],
+            main: ['Inter', 'sans-serif']
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .heart-beat {
+        animation: heartBeat 1.5s ease-in-out infinite;
+      }
+      .float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .bg-gradient-love {
+        background: linear-gradient(135deg, #FF4B91 0%, #FF85A1 50%, #FFD1DA 100%);
+      }
+      .animate-appear {
+        animation: appear 0.8s ease-out forwards;
+      }
+      .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+        margin-bottom: 2rem;
+      }
+      .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background-color: #FF4B91;
+      }
+      .timeline-item::after {
+        content: '';
+        position: absolute;
+        left: 0.45rem;
+        top: 1.5rem;
+        width: 0.1rem;
+        height: calc(100% - 1rem);
+        background-color: #FFD1DA;
+      }
+      .timeline-item:last-child::after {
+        display: none;
+      }
+    }
+
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      14% { transform: scale(1.1); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.1); }
+      70% { transform: scale(1); }
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    @keyframes appear {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 50;
+    }
+    
+    .heart {
+      position: absolute;
+      top: -100px;
+      left: 0;
+      transform: translateY(0);
+      opacity: 0;
+      animation: fall linear forwards;
+    }
+    
+    @keyframes fall {
+      to {
+        transform: translateY(calc(100vh + 100px));
+        opacity: 0;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-main bg-gray-50 min-h-screen">
+  <div class="hearts" id="heartsContainer"></div>
+
+  <!-- 背景音乐控制器 -->
+  <div class="fixed bottom-6 right-6 z-40">
+    <button id="musicToggle" class="w-12 h-12 rounded-full bg-love-primary text-white shadow-lg flex items-center justify-center hover:bg-love-dark transition-colors duration-300">
+      <i class="fa-solid fa-music heart-beat"></i>
+    </button>
+    <audio id="bgMusic" loop>
+      <source src="music/1.m4a" type="audio/mpeg">
+      您的浏览器不支持音频播放。
+    </audio>
+  </div>
+
+  <!-- 导航栏 -->
+  <nav class="fixed w-full z-40 transition-all duration-500" id="navbar">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center bg-white/80 backdrop-blur-md rounded-b-xl shadow-sm">
+      <a href="#" class="text-love-primary font-romantic text-2xl md:text-3xl font-bold">520 爱你</a>
+      <div class="hidden md:flex space-x-8">
+        <a href="#home" class="text-gray-700 hover:text-love-primary transition-colors duration-300">首页</a>
+        <a href="#memory" class="text-gray-700 hover:text-love-primary transition-colors duration-300">来时路</a>
+        <a href="#promise" class="text-gray-700 hover:text-love-primary transition-colors duration-300">愿今后</a>
+        <a href="#gallery" class="text-gray-700 hover:text-love-primary transition-colors duration-300">心动</a>
+        <a href="#message" class="text-gray-700 hover:text-love-primary transition-colors duration-300">给你的话</a>
+      </div>
+      <button class="md:hidden text-love-primary text-xl" id="menuBtn">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+    
+    <!-- 移动端菜单 -->
+    <div class="md:hidden bg-white shadow-lg rounded-b-xl overflow-hidden transition-all duration-300 max-h-0" id="mobileMenu">
+      <div class="container mx-auto px-4 py-2">
+        <a href="#home" class="block py-3 text-gray-700 hover:text-love-primary transition-colors duration-300">首页</a>
+        <a href="#memory" class="block py-3 text-gray-700 hover:text-love-primary transition-colors duration-300">我们的回忆</a>
+        <a href="#promise" class="block py-3 text-gray-700 hover:text-love-primary transition-colors duration-300">我的承诺</a>
+        <a href="#gallery" class="block py-3 text-gray-700 hover:text-love-primary transition-colors duration-300">照片墙</a>
+        <a href="#message" class="block py-3 text-gray-700 hover:text-love-primary transition-colors duration-300">给你的话</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 首页部分 -->
+  <section id="home" class="pt-24 md:pt-32 pb-16 md:pb-24 relative overflow-hidden">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-10 md:mb-0 animate-appear" style="animation-delay: 0.2s;">
+          <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-romantic font-bold text-love-primary leading-tight mb-4">
+            520 <span class="heart-beat inline-block">❤️</span> 我爱你
+          </h1>
+          <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-700 mb-8 max-w-lg">
+            从相遇的那一刻起，我的世界便有了不一样的色彩。今天，我想对你说：我爱你，不只是在520，而是在生命中的每一天。
+          </p>
+          <div class="flex space-x-4">
+            <a href="#message" class="px-6 py-3 bg-love-primary text-white rounded-full shadow-lg hover:shadow-xl hover:bg-love-dark transform hover:-translate-y-1 transition-all duration-300">
+              给你的心里话
+            </a>
+            <a href="#memory" class="px-6 py-3 bg-white text-love-primary border border-love-primary rounded-full shadow-md hover:shadow-lg hover:bg-love-accent/30 transform hover:-translate-y-1 transition-all duration-300">
+              来时路
+            </a>
+          </div>
+        </div>
+        <div class="md:w-1/2 flex justify-center animate-appear" style="animation-delay: 0.5s;">
+          <div class="relative">
+            <div class="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-love flex items-center justify-center shadow-2xl float">
+              <img src="https://picsum.photos/seed/love1/300/300" alt="爱情" class="w-56 h-56 md:w-72 md:h-72 rounded-full object-cover border-8 border-white/30">
+            </div>
+            <div class="absolute -top-6 -right-6 w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center float" style="animation-delay: 1s;">
+              <span class="text-love-primary font-romantic font-bold text-xl">520</span>
+            </div>
+            <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center float" style="animation-delay: 2s;">
+              <i class="fa-solid fa-heart text-love-primary text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 装饰元素 -->
+    <div class="absolute top-1/4 -left-20 w-40 h-40 bg-love-accent/30 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 -right-20 w-60 h-60 bg-love-secondary/20 rounded-full blur-3xl"></div>
+  </section>
+
+  <!-- 回忆时间线 -->
+  <section id="memory" class="py-16 md:py-24 bg-gradient-to-b from-white to-love-accent/10">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16 animate-appear">
+        <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-romantic font-bold text-love-primary mb-4">来时路</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">每一刻都是珍贵的，每一秒都是独特的。让我们一起回顾那些美好的瞬间...</p>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <!-- 时间线 -->
+        <div class="animate-appear" style="animation-delay: 0.3s;">
+          <div class="timeline-item">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">初识</h3>
+            <p class="text-gray-600 mb-3">2024.10.07，国庆的最后一天，相识与泡泡（这是我刚用泡泡的第三天哟）
+              我向殿下请教，谁能想到，这一个问题将我们链接至今呢（￣︶￣）↗　</p>
+            <div class="rounded-lg overflow-hidden shadow-md">
+              <img src="image/1.jpg" alt="初识" class="w-full h-256 object-cover">
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">第一次铲铲</h3>
+            <p class="text-gray-600 mb-3">2024.10.20，和殿下第一次玩铲铲，殿下还是新号，感觉殿下真的很可爱，说话很有趣(●'◡'●)</p>
+            <div class="rounded-lg overflow-hidden shadow-md">
+              <img src="image/2.jpg" alt="第一次铲铲" class="w-full h-256 object-cover">
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">第一次加QQ</h3>
+            <p class="text-gray-600 mb-3">玩铲铲后经过我一周的辗转反侧，蓄谋已久(❤ ω ❤)，也是成功加上了殿下的QQ，超激动ing</p>
+            <div class="rounded-lg overflow-hidden shadow-md">
+              <img src="image/3.jpg" alt="第一次加QQ" class="w-full h-256 object-cover">
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">心动MAX</h3>
+            <p class="text-gray-600 mb-3">好吧，其实在这之前已经早就被殿下俘获了(●'◡'●)，但是真的看到殿下说行动证明这里就，真想马上狠狠亲殿下啊(o′┏▽┓｀o) </p>
+            <div class="rounded-lg overflow-hidden shadow-md">
+              <img src="image/4.jpg" alt="心动MAX" class="w-full h-256 object-cover">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 愿今后 -->
+  <section id="promise" class="py-16 md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16 animate-appear">
+        <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-romantic font-bold text-love-primary mb-4">愿今后</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">喜欢是淡淡的爱，爱是浓浓的喜欢，现在，以后，我只想黏在殿下身边。😚</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- 未来一 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-appear" style="animation-delay: 0.2s;">
+          <div class="w-16 h-16 bg-love-accent/30 rounded-full flex items-center justify-center mb-6 mx-auto">
+            <i class="fa-solid fa-heart text-love-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">满眼是你</h3>
+          <p class="text-gray-600 text-center">好吧，现在已经满眼全都是殿下了，可恶，我被殿下迷住了，逃不掉了，嘿嘿，满眼是你，也许，这就是我的后半生了( •̀ ω •́ )✧</p>
+        </div>
+        
+        <!-- 未来二 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-appear" style="animation-delay: 0.4s;">
+          <div class="w-16 h-16 bg-love-accent/30 rounded-full flex items-center justify-center mb-6 mx-auto">
+            <i class="fa-solid fa-home text-love-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">唯你而已</h3>
+          <p class="text-gray-600 text-center">我不敢说什么海枯石烂，沧海桑田，人活不了那么久，我只能告诉你，我的往后，唯你而已(❤ ω ❤)</p>
+        </div>
+        
+        <!-- 未来三 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-appear" style="animation-delay: 0.6s;">
+          <div class="w-16 h-16 bg-love-accent/30 rounded-full flex items-center justify-center mb-6 mx-auto">
+            <i class="fa-solid fa-star text-love-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">携手白头</h3>
+          <p class="text-gray-600 text-center">最浪漫的爱情不是冲冠一怒为红颜，也不是百里烽火只为回眸一笑，与君携手共白首，走过岁月洗礼，互相包容直至坟墓也许才是时间最坚定的浪漫，我，已经做好了包容殿下一切的打算了哦( •̀ ω •́ )✧</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 给你的话 -->
+  <section id="message" class="py-16 md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 relative overflow-hidden animate-appear">
+        <!-- 装饰元素 -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-love-accent/20 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-love-secondary/20 rounded-full blur-2xl"></div>
+        
+        <div class="relative">
+          <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-romantic font-bold text-love-primary mb-6 text-center">给我最爱的你</h2>
+          
+          <div class="space-y-6 text-gray-700 mb-8">
+            <p>亲爱的晓晓（我唯一的主人）（最最亲爱的老公(○｀ 3′○)），</p>
+            <p>今天是520，一个表达爱意的日子。我想借此机会，向你表达我内心深处的感受。</p>
+            <p>遇见你是我生命中最美丽的意外。从我们相识的那一刻起，我的生活就有了牵挂。殿下的声音、殿下说过的话、殿下的一切，都让我心动不已。</p>
+            <p>和你在一起的每一天都是幸福的，226个日子，每天脑海里全部都是你。</p>
+            <p>一开始，我只觉得殿下说话很有趣（虽然网上我很抽象，但我其实挺一本正经的(oﾟvﾟ)ノ），越聊越觉得晓晓超可爱，现在看来，果然是世界最最完美的殿下(～o￣3￣)～。</p>
+            <p>情不知所起，不知所止。也许我是一开始就喜欢殿下的（色色的我馋殿下身子，很合理吧（＞人＜；）），也许是在一天一天的留言里沉迷的吧。</p>
+            <P>不过，我不认为世上会有什么一见钟情的爱情，那都是见色起意，我认为的爱情，是细水长流，自然而然的爱情。</P>
+            <P>我也曾幻想过爱情是何模样，不在乎对方的一切，抛开世俗的皮囊与社会关系，只求灵魂共鸣的一人</P>
+            <P>而今，我二十余年的憧憬，化作了你的灵魂。</P>
+            <P>没有阳光正好，微风不燥的相遇，也没有轰轰烈烈的表白宣誓，只有226个日子的思念，汇聚成胸口这颗，住着你的心房。</P>
+            <P>我爱你！晓晓，尽管我不知道什么是爱！</P>
+            <P>但想到你，我会会心一笑，傻呵呵直乐，想到你，我会幻想着与你街角漫步，然后趁人不注意狠狠亲你一口，想到你，我会幻想着拥你入怀（好吧，也许可能会是你拥我入怀），安于美梦。</P>
+            <P>不知何处看过这样一个观点，男人喜欢女人，如果想到的是身体，那就是欲望的喜欢，如果想到的是亲嘴，那就是生理性的喜欢，是喜欢大过欲望的表现。</P>
+            <P>我没谈过恋爱，曾经畅想的爱也不过婚后儿女环绕，十指紧扣的相对一笑，可现在想来，喜欢，原来是真的想亲嘴啊(❤ ω ❤)</P>
+            <p>感谢你出现在我的生命中，让我体会到了爱的美好。未来的路还很长，希望我能一直黏着晓晓走过每一个春夏秋冬，一起创造更多美好的回忆。</p>
+            <p>我爱你！晓晓。不仅仅是在今天，在过去的226天，在未来的22600天，而是在我生命中的每一天。</p>
+            <p class="font-romantic text-xl">永远爱你的小鑫</p>
+          </div>
+          
+          <div class="flex justify-center">
+            <button id="heartButton" class="px-8 py-4 bg-love-primary text-white rounded-full shadow-lg hover:shadow-xl hover:bg-love-dark transform hover:-translate-y-1 transition-all duration-300 flex items-center">
+              <i class="fa-solid fa-heart mr-2 heart-beat"></i>
+              <span>点击这里表达我的爱</span>
+            </button>
+          </div>
+          
+          <div id="heartPopup" class="fixed inset-0 flex items-center justify-center bg-black/70 z-50 opacity-0 pointer-events-none transition-opacity duration-500">
+            <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 transform scale-90 transition-transform duration-500">
+              <div class="text-center">
+                <div class="inline-block mb-4">
+                  <i class="fa-solid fa-heart text-love-primary text-5xl heart-beat"></i>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-2">我爱你</h3>
+                <p class="text-gray-600 mb-6">这份爱永远不会改变</p>
+                <button id="closePopup" class="px-6 py-3 bg-love-primary text-white rounded-full shadow-md hover:shadow-lg hover:bg-love-dark transition-all duration-300">
+                  我也爱你
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <h2 class="text-love-primary font-romantic text-2xl font-bold mb-2">520 爱你</h2>
+          <p class="text-gray-400">爱你不止在520，而是每一天</p>
+        </div>
+        
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-love-primary transition-colors duration-300">
+            <i class="fa-brands fa-weixin text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-love-primary transition-colors duration-300">
+            <i class="fa-brands fa-weibo text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-love-primary transition-colors duration-300">
+            <i class="fa-brands fa-instagram text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-love-primary transition-colors duration-300">
+            <i class="fa-brands fa-facebook text-xl"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+        <p>用❤️制作 | 520专属页面 | 永远爱你</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 导航栏滚动效果
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('bg-white', 'shadow-md');
+        navbar.classList.remove('bg-transparent');
+      } else {
+        navbar.classList.remove('bg-white', 'shadow-md');
+        navbar.classList.add('bg-transparent');
+      }
+    });
+    
+    // 移动端菜单
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+    
+    menuBtn.addEventListener('click', () => {
+      if (!menuOpen) {
+        menuBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+        menuOpen = true;
+      } else {
+        menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        mobileMenu.style.maxHeight = '0';
+        menuOpen = false;
+      }
+    });
+    
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        // 关闭移动菜单（如果打开）
+        if (menuOpen) {
+          menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+          mobileMenu.style.maxHeight = '0';
+          menuOpen = false;
+        }
+        
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // 漂浮爱心效果
+    function createHeart() {
+      const heartsContainer = document.getElementById('heartsContainer');
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      
+      // 随机大小和位置
+      const size = Math.random() * 20 + 10;
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.width = size + 'px';
+      heart.style.height = size + 'px';
+      
+      // 随机颜色
+      const colors = ['#FF4B91', '#FF85A1', '#FFD1DA', '#C92C6D'];
+      heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+      
+      // 随机旋转角度
+      const rotation = Math.random() * 360;
+      heart.style.transform = `rotate(${rotation}deg)`;
+      
+      // 随机坠落时间
+      const duration = Math.random() * 5 + 5;
+      heart.style.animationDuration = duration + 's';
+      
+      // 随机延迟
+      const delay = Math.random() * 5;
+      heart.style.animationDelay = delay + 's';
+      
+      heart.innerHTML = '❤️';
+      heartsContainer.appendChild(heart);
+      
+      // 动画结束后移除元素
+      setTimeout(() => {
+        heart.remove();
+      }, (duration + delay) * 1000);
+    }
+    
+    // 定时创建爱心
+    setInterval(createHeart, 300);
+    
+    // 点击爱心按钮显示弹窗
+    const heartButton = document.getElementById('heartButton');
+    const heartPopup = document.getElementById('heartPopup');
+    const closePopup = document.getElementById('closePopup');
+    
+    heartButton.addEventListener('click', () => {
+      heartPopup.classList.remove('opacity-0', 'pointer-events-none');
+      heartPopup.querySelector('div').classList.remove('scale-90');
+      heartPopup.querySelector('div').classList.add('scale-100');
+    });
+    
+    closePopup.addEventListener('click', () => {
+      heartPopup.classList.add('opacity-0', 'pointer-events-none');
+      heartPopup.querySelector('div').classList.remove('scale-100');
+      heartPopup.querySelector('div').classList.add('scale-90');
+    });
+    
+    // 页面加载时的动画效果
+    document.addEventListener('DOMContentLoaded', () => {
+      // 初始导航栏样式
+      if (window.scrollY > 50) {
+        navbar.classList.add('bg-white', 'shadow-md');
+      } else {
+        navbar.classList.add('bg-transparent');
+      }
+      
+      // 触发滚动以初始化导航栏状态
+      window.dispatchEvent(new Event('scroll'));
+    });
+    
+    // 背景音乐控制
+    const musicToggle = document.getElementById('musicToggle');
+    const bgMusic = document.getElementById('bgMusic');
+    let musicPlaying = false;
+    
+    // 尝试在用户交互后播放音乐
+    musicToggle.addEventListener('click', async () => {
+      if (!musicPlaying) {
+        try {
+          await bgMusic.play();
+          musicPlaying = true;
+          musicToggle.innerHTML = '<i class="fa-solid fa-pause heart-beat"></i>';
+        } catch (error) {
+          console.log('播放音乐失败:', error);
+          // 提示用户点击播放
+          alert('由于浏览器限制，请点击页面任意位置后再试');
+        }
+      } else {
+        bgMusic.pause();
+        musicPlaying = false;
+        musicToggle.innerHTML = '<i class="fa-solid fa-music heart-beat"></i>';
+      }
+    });
+    
+    // 为解决浏览器自动播放限制，在用户首次点击页面时尝试播放音乐
+    document.addEventListener('click', async function startMusic() {
+      if (!musicPlaying) {
+        try {
+          await bgMusic.play();
+          musicPlaying = true;
+          musicToggle.innerHTML = '<i class="fa-solid fa-pause heart-beat"></i>';
+        } catch (error) {
+          console.log('自动播放音乐失败:', error);
+        }
+        // 移除事件监听器，避免重复触发
+        document.removeEventListener('click', startMusic);
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
+    
